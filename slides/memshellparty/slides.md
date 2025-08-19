@@ -12,7 +12,7 @@ title: Java 内存马武器化与开源
 MemShellParty 一款首个搭载全中间件自动化测试的 Java 内存马生成平台
 
 <!--
-Hello，大家好，很高兴能在这里分享我这半年来一直在做的开源项目，MemShellParty，它应该是首个搭载全中间件自动化测试的 Java 内存马生成平台，目前已经相对成熟，所以今天，我想和大家聊聊 Java 内存马的武器化与开源之路。
+Hello，大家好，很高兴能在这里分享我这半年来一直在做的开源项目，MemShellParty，它应该是目前首个搭载全中间件自动化测试的 Java 内存马生成平台，目前已经相对成熟，所以今天，我想和大家聊聊 Java 内存马的武器化与开源。
 -->
 
 ---
@@ -50,7 +50,7 @@ glowSeed: 14
 </div>
 
 <!--
-我是 ReaJason，目前就职于边界无限，是靖云甲产品线的 Java RASP 核心研发工程师。这是我的第一次踏入网络安全的行业，之前是个做 OA 的 Java CRUD boy。今天的分享内容就来源于我的个人开源项目，MemShellParty，借此我也加入了 Java Chains 组织，成为了其中的一员，之后也会在 Java Chains 上分享自己学习到的一些利用链。希望今天的分享能给大家带来一些新的思路。
+我是 ReaJason，目前就职于边界无限，是靖云甲产品线的 Java RASP 核心研发工程师。这是我的第一份踏入网络安全行业的工作，之前是个做 OA 的 Java CRUD boy。今天的分享内容就来源于我的个人开源项目，MemShellParty，通过这个项目我也有幸能被邀请加入 Java Chains 组织，成为了其中的一员，之后也会在 Java Chains 上分享自己学习到的一些利用链。希望今天的分享能给大家带来一些新的思路，第一个是我的博客地址，如果想要更深入了解一下我可以去我的博客逛逛，其他是我的一些社交平台账号
 -->
 
 ---
@@ -87,11 +87,11 @@ glowSeed: 14
 <!--
 首先想和大家聊一下为什么我会编写 MemShellParty 这个项目，契机是什么
 
-<click> 当时我正在开发新的需求，突然让我写个靶场，还急用，内存马测试场景一般包括 Servlet、Filter、Listener、Spring 框架以及 Agent 内存马 
+<click> 我记得当时我正在开发新的需求，突然收到消息客户让我写个靶场，还急用，内存马测试场景一般包括 Servlet、Filter、Listener、Spring 框架以及 Agent 内存马 
 
 <click> 
 
-<click> 最终发现是 JMG WAS Filter 注入逻辑有问题，注入是用的是全类名，但是判断是否已注入用的是类名简称，会触发重复注入，且第二次注入 WAS 内部判断是已经注册过了，返回的 FilterConfig 是 null，这就会导致所有请求都会因为 NPE 直接挂掉，在查看其他注入实现，也有类似的问题，如果使用 JMG 二开的师傅可以留意一下。
+<click> 最终发现是 JMG WAS Filter 注入逻辑有问题，注入是用的是全类名，但是判断是否已注入用的是类名简称，会触发重复注入（且第二次注入 WAS 内部判断是已经注册过了，返回的 FilterConfig 是 null，这就会导致所有请求都会因为 NPE 直接挂掉）在查看其他注入实现，也有类似的问题，如果使用 JMG 二开的师傅可以留意一下。
 
 <click> 最后发现，冰蝎马中如果 response 包装类的 OutputStream 方式不是 public 的就会连接失败（response.getClass().getMethod("OutputStream")），因此需要手动 unwrap 一下
 
@@ -101,6 +101,11 @@ glowSeed: 14
 <click> 哥斯拉和冰蝎的连接器都使用 JavaFX，启动起来有时候会遇到 trouble，Javassist 往字节码直接塞字符串的方式看起来不干净（当然并不是说 Javassist 不好，只要能实现最终功能的工具就是好工具）
 
 <click> 因为开源项目大多可用性较差，于是想做个带全自动化测试靶场的武器化平台
+
+为什么要开源
+1. 我工作中遇到的难题，肯定也是大家遇到的难题，分享出来能帮助大家一起减轻工作压力，享受美好生活。
+2. 分享也是为了能和大家交流，一起学习进步，很多东西我搜不到的，有时候其他师傅能快速找到，共享知识。
+3. 开源的核心是分享，一般项目维护周期不会太长，且用且珍惜。
 -->
 
 ---
@@ -132,11 +137,11 @@ transition: none
 <!--
 简单介绍一下 MemShellParty 目前的一些情况：
 
-1. 当前已发布了 2.0.0 版本，支持了探测马的生成，目的就是为了在不知道选何种服务类型的马生成时可以进行 RCE 探测一下。
+1. 当前已发布了 2.0.0 版本，支持了探测马的生成，目的就是为了在不知道选何种服务类型的马生成时可以进行 RCE 探测一下。也算是一些周边小工具。
 2. 当前 DockerHub 已有 3k 的 pull 量，不算多，但是也算是有用户吧
 3. 首次提交代码的时间是 2024 年 9 月 1 号，这么算，这个项目快有一年了。
-4. 目前测试 case 数量已经有 3000 了，所以可用性这块一直还是保持着在的，不过可能还是会有测试不到的地方，如果遇到不可用的情况，还需要有用户能反馈，不然我也不知道。
-5. 目前这个项目就我一个人开发，已经做了 632 个 commits，代码量也是比较丰富，从新增和删除的代码来看，其实我这期间已经做了两三次重构了。
+4. 目前测试 case 数量已经有 3600 多了，所以可用性这块一直还是保持着在的，不过可能还是会有测试不到的地方，如果遇到不可用的情况，还需要有用户能反馈，不然我也不知道。
+5. 目前这个项目就我一个人开发，已经做了 632 个 commits，代码量也是比较丰富，从新增和删除的代码都非常多，因为我这期间已经做了两三次重构了。
 -->
 
 ---
@@ -207,6 +212,10 @@ class: text-center
 
 </div></div>
 
+<!--
+测试步骤繁琐，每次需要重启漏洞环境，生成 payload，放到漏洞测试工具中，验证 payload 是否可用，这种情况下可以通过自动化测试缩减验证步骤。
+-->
+
 ---
 
 # 自动化测试需要了解的技术
@@ -217,11 +226,15 @@ class: text-center
 - Docker - 运行测试漏洞环境
 - 集成测试工具，例如 Testcontainers
 
+<!--
+自动化测试的最需要考虑的问题，就是这个东西我该如何测，接下来我分享项目几个比较有趣的测试例子。
+-->
+
 ---
 level: 2
 ---
 
-# 用例 1: Tomcat 容器测试中间件类型探测 payload
+# 用例 1: 使用 Testcontainers 测试服务类型探测 payload
 
 <v-click>
 
@@ -295,6 +308,9 @@ public class TomcatContainerTest {
 
 </v-click>
 
+<!--
+除了能通过镜像启动容器，还可以使用 Dockerfile 和 docker-compose 文件，可以通过官方文档了解更多的用法。
+-->
 
 ---
 
@@ -378,6 +394,10 @@ public class JavaReadObjCB194Servlet extends BaseDeserializeServlet {
 }
 ```
 
+<!--
+但是打包工具，同一个依赖引入不同的版本，也只会打包进去一个，如何将不同版本的依赖放入到一个项目中，又需要一些小的技巧了。
+-->
+
 ---
 
 # Gradle 靶场打包配置
@@ -426,6 +446,10 @@ tasks.war {
 <br>
 
 靶场项目参考地址：[vul/vul-webapp-deserialize/build.gradle.kts](https://github.com/ReaJason/MemShellParty/blob/master/vul/vul-webapp-deserialize/build.gradle.kts)
+
+<!--
+Maven 项目应该能使用 Maven Dependency Plugin 来实现同样的效果，因为这个插件能用来拷贝依赖到指定的位置
+-->
 
 ---
 
@@ -761,16 +785,30 @@ public TomcatEcho2Bytecode() {
   }
 </style>
 
+<!--
+想分享这个主题，主要是写探测马的时候，为了能找已经写好的例子，找了半天，都没找到能看懂的，感觉就是人工混淆了代码一样，让人懵逼。
+
+1. var 的命名，就是通过反编译器直接抠出来的代码，一个变量被反复赋值
+2. fori 遍历太古老，流程控制敲套太深，done 布尔判断多余
+3. 另外还有一处简单的逻辑问题
+
+最后这块代码并不兼容 Tomcat6 和 Tomcat11 这两个版本，全中间件适配的版本，我们可以在 MemShellParty 中找到。
+-->
+
 ---
 
 # 提高编程技能
 
 - 了解和认识软件工程 —— [《代码大全》 - 安娜的档案](https://zh.annas-archive.org/search?q=%E4%BB%A3%E7%A0%81%E5%A4%A7%E5%85%A8)
-- 类命名、函数命名、参数命名、字段命名、包名、模块名
-- 代码重构不断演进 —— [《重构：改变既有代码的设计》 - 安娜的档案](https://zh.annas-archive.org/search?q=%E9%87%8D%E6%9E%84%3A%E6%94%B9%E5%96%84%E6%97%A2%E6%9C%89%E4%BB%A3%E7%A0%81%E7%9A%84%E8%AE%BE%E8%AE%A1%28%E7%AC%AC2%E7%89%88%29)
+- 同一个项目中各种命名应保持一致，类名、函数名、参数名、字段名、包名、模块名
+- 架构是通过代码重构不断演进的 —— [《重构：改变既有代码的设计》 - 安娜的档案](https://zh.annas-archive.org/search?q=%E9%87%8D%E6%9E%84%3A%E6%94%B9%E5%96%84%E6%97%A2%E6%9C%89%E4%BB%A3%E7%A0%81%E7%9A%84%E8%AE%BE%E8%AE%A1%28%E7%AC%AC2%E7%89%88%29)
 - 上网冲浪，了解别人是如何做的
 - 工欲善其事必先利其器，了解各种工具小技巧
 
+<!--
+1. 回显马，探测马，probe 和 detection 选择
+2. 架构设计是在功能基础上进行取舍，比如咱写一个就几个功能项目还搞个插件化，是不是有点扯淡，了解每个解决方案他想要解决的问题再进行实践。
+-->
 
 ---
 layout: center
@@ -782,7 +820,7 @@ class: text-center
 
 ---
 
-# 当前类生成体系
+# MemShellParty 类生成体系
 
 - 注入器和内存马分离：Tomcat Filter 的注入方式是固定的，但是在 Filter 上挂的马是不固定的
 
@@ -834,7 +872,7 @@ ClassVisitor cv = new ClassVisitor(Opcodes.ASM9, cw) {
 
     }
 };
-cr.accept(cv, ClassReader.SKIP_DEBUG);
+cr.accept(cv, full ? ClassReader.SKIP_DEBUG : 0);
 return cw.toByteArray();
 ```
 ```java
@@ -893,7 +931,7 @@ if (request instanceof HttpServletRequest && response instanceof HttpServletResp
 
 ### 2. 哥斯拉实现
 
-Agent Jar 默认由 getSystemClassLoader 进行加载，因此可直接通过其进行加载，但是 GlassFish/WAS 这种 OSGI 类加载模型会有限制，加载不到
+Agent Jar 默认由 appClassLoader 进行加载，因此可直接通过其进行加载，但是 GlassFish/WAS 这种 OSGI 类加载模型会有限制，加载不到
 
 ```java
 try {
@@ -901,8 +939,7 @@ try {
             .equals(new Object[]{request, response})) {
         return;
     }
-}
-catch (Throwable throwable) {}
+} catch (Throwable throwable) {}
 ```
 
 ### 3. 最终选择的实现
@@ -914,8 +951,7 @@ try {
     if (new ErrorAgentFilterChain().equals(new Object[]{request, response})) {
         return;
     }
-}
-catch (Throwable throwable) {}
+} catch (Throwable throwable) {}
 ```
 
 ---
@@ -953,7 +989,7 @@ layout: intro
 部署在主机上的安全软件，通过监控系统文件、进程和日志等内部活动，来检测和告警潜在的入侵行为
 
 - 主动式周期扫描
-- 通过 Java Agent 对 Java 应用类字节码 DUMP，对其进行字节码分析
+- 使用 Java Agent 对 Java 应用中的类字节码进行 DUMP 之后发送给字节码分析引擎进行研判
 
 ---
 layout: intro
@@ -964,8 +1000,8 @@ layout: intro
 注入到应用中，针对各种敏感函数进行监控，能精确识别并抵御自身受到的攻击
 
 - 被动式扫描
-- 通过注册自定义 ClassFileTransformer 即可监听每一个注册到 JVM 中的类，对其进行字节码分析
-- 各种敏感行为的切点检测，例如文件操作、命令执行、数据库连接、代理隧道建立等等
+- 通过注册自定义 ClassFileTransformer 来监听每一个注册到 JVM 中的类，进行字节码分析研判
+- 各种敏感行为的切点检测，例如文件操作、命令执行、数据库连接和代理隧道建立等等
 
 ---
 layout: intro
@@ -976,9 +1012,9 @@ layout: intro
 <v-clicks>
 
 - 继承 ClassLoader 并在内部调用 defineClass 方法
-- 反射调用敏感方法，例如 ClassLoader.defineClass、addFilter、addListener 等
+- 反射调用敏感方法，例如 ClassLoader.defineClass、ServletContext.addFilter
 - 加密、编码函数调用，AES + BASE64 + XOR
-- 命令回显函数调用，Runtime.exec，ProcessBuilder.start 等
+- 命令回显函数调用，例如 Runtime.exec，ProcessBuilder.start
 - 可疑的类名，xxxUtil、godzilla、behinder
 - 类加载调用 defineClass(byte[],int,int) 签名，不传 className
 
@@ -999,9 +1035,10 @@ class: text-center
 
 尽可能模拟正常流量，即便被注意到，安全运营人员也难以立即做出判断
 
-- 加密流量，使用国密 SM4、Base32
+- 使用国内常见业务算法加密流量，伪装成正常业务，例如国密 SM4
+- 使用非常见编码或字符集，逃避流量解码，例如 Base32、UTF-32
 - 请求头可使用授权请求头，例如 `Authorization: Bearer JWT` 传交互参数
-- 先挂一个 Filter 马，采集几分钟流量生成流量模板
+- 通过挂一个 Filter 马，采集几分钟流量生成流量模板，找到合适的业务路径和业务参数
 
 <div class="grid grid-cols-2 gap-1">
 
@@ -1043,12 +1080,16 @@ Content-Length: 112
 
 # 字节码特征消除
 
+仅是做混淆，实际上并不能逃过 ASM 词法分析规则
+
 - 主动扫描工具为了减少对应用的影响，一般设置有白名单，使类特征命中白名单即可绕过
-- 选取非常见 Web 组件挂载内存马
+- 选取非常见 Web 组件挂载内存马（调用的 API 不在黑名单规则之中）
 - 将类方法调用改为反射调用，例如 ProcessBuilder.start，并将所有字符串进行加密
 - 将单个类，拆分成各个小的混淆类，增加调用链深度，提高溯源成本
+- 业务类模拟，文件管理业务（fileUtils）、命令执行业务（oshi 工具类）
+- 使用一般 dump 工具无法正常 dump 的 class 名称或特殊字节码序列，保护样本
 
-<div class="grid grid-cols-2 gap-1">
+<div class="grid grid-cols-[2fr_3fr] gap-2">
 
 ```java
 a {
@@ -1063,7 +1104,7 @@ a {
 }
 ```
 
-```java
+```java {*}{maxHeight: '200px'}
 f {
   a {
     for (Thread t : Thread.getAllStackTraces().keySet()) {
@@ -1074,7 +1115,9 @@ f {
                 c.addAll(d.values());
             }
             continue;
-        }else if (t.getContextClassLoader() != null && (t.getContextClassLoader().getClass().toString().contains(a("UGFyYWxsZWxXZWJhcHBDbGFzc0xvYWRlcg=="))|| t.getContextClassLoader().getClass().toString().contains(a("VG9tY2F0RW1iZWRkZWRXZWJhcHBDbGFzc0xvYWRlcg==")))) {
+        }else if (t.getContextClassLoader() != null 
+            && (t.getContextClassLoader().getClass().toString().contains(a("UGFyYWxsZWxXZWJhcHBDbGFzc0xvYWRlcg=="))
+            || t.getContextClassLoader().getClass().toString().contains(a("VG9tY2F0RW1iZWRkZWRXZWJhcHBDbGFzc0xvYWRlcg==")))) {
             c.add(g(g(t.getContextClassLoader(), a("cmVzb3VyY2Vz")), a("Y29udGV4dA==")));
         }
     }
