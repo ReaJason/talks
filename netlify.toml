@@ -1,0 +1,18 @@
+[build]
+publish = "dist"
+command = "bun run build"
+
+[build.environment]
+NODE_VERSION = "22"
+PLAYWRIGHT_BROWSERS_PATH = "0"
+
+[[redirects]]
+from = "/2025/memshellparty/*"
+to = "/2025/memshellparty/index.html"
+status = 200
+
+
+[[redirects]]
+from = "/"
+to = "https://reajason.eu.org/talks"
+status = 302

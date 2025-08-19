@@ -1,0 +1,24 @@
+{
+  "name": "talks",
+  "type": "module",
+  "private": true,
+  "workspaces": ["slides/*"],
+  "scripts": {
+    "dev": "tsx scripts/picker.ts dev --open",
+    "build": "bun run --filter '*' build",
+    "export": "bun run --filter '*' export"
+  },
+  "devDependencies": {
+    "@iconify-json/ri": "^1.2.5",
+    "@slidev/cli": "^52.1.0",
+    "@slidev/client": "^52.1.0",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest",
+    "@types/prompts": "^2.4.9",
+    "execa": "^9.6.0",
+    "playwright-chromium": "^1.54.2",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
+  }
+}
